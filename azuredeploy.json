@@ -30,7 +30,7 @@
     },
     "variables": {
         "appServicePlanPortalName": "[concat('AppServicePlan-', parameters('sites_name'))]",
-        "repoUrl": "https://github.com/JayRHa/GPTDeviceTroubleshooter.git"
+        "repoUrl": "https://github.com/JayRHa/gpt-device-troubleshooter.git"
     },
     "resources": [
         {

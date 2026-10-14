@@ -1,66 +1,98 @@
-<!-- unified-readme:start -->
-<div align="center">
-
-# GPT Device Troubleshooter
-
-**Archived GPT-assisted device troubleshooting experiment for endpoint management scenarios.**
-
-Build. Automate. Share.
-
-[![GitHub stars](https://img.shields.io/github/stars/JayRHa/GPTDeviceTroubleshooter?style=for-the-badge&logo=github&color=f4c542)](https://github.com/JayRHa/GPTDeviceTroubleshooter/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/JayRHa/GPTDeviceTroubleshooter?style=for-the-badge&logo=github&color=4078c0)](https://github.com/JayRHa/GPTDeviceTroubleshooter/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/JayRHa/GPTDeviceTroubleshooter?style=for-the-badge&logo=github&color=d73a4a)](https://github.com/JayRHa/GPTDeviceTroubleshooter/issues)
-[![Contributors](https://img.shields.io/github/contributors/JayRHa/GPTDeviceTroubleshooter?style=for-the-badge&logo=github&color=28a745)](https://github.com/JayRHa/GPTDeviceTroubleshooter/graphs/contributors)
-
-<p>
-  <a href="https://jannikreinhard.com/">Blog</a> ·
-  <a href="https://www.linkedin.com/in/jannik-r/">LinkedIn</a> ·
-  <a href="https://x.com/jannik_reinhard">X</a>
+<!-- jr-brand:start -->
+<p align="center">
+  <a href="https://jannikreinhard.com/">
+    <img src="https://raw.githubusercontent.com/JayRHa/.github/main/assets/readme/brand-header.png" alt="Jannik Reinhard — I help enterprises ship secure AI agents" width="100%">
+  </a>
 </p>
+<p align="center">
+  <a href="https://jannikreinhard.com/">Website</a> ·
+  <a href="https://www.linkedin.com/in/jannik-r/">LinkedIn</a> ·
+  <a href="https://x.com/jannik_reinhard">X</a> ·
+  <a href="https://www.youtube.com/@jannikreinhard">YouTube</a>
+</p>
+<!-- jr-brand:end -->
+
+# GPT device troubleshooter
+
+**Type:** Examples and labs · **Status:** Archived · Reference
+
+<a id="intro"></a>
+
+## Overview
+
+GPT-assisted device troubleshooting experiment for endpoint management scenarios.
 
 ---
 
-`AI-assisted Operations` | `Python` | `Public` | `Archived`
+You can find the Tool Intune Device Troubleshooter in this repository. The gole of this tool is to provide you an assistant which helps you to answer your questions arround your intune environment.
+If you have further ideas I would be happy if you send them to me, open an issue on this repository or create a pull request.
 
-</div>
+<a id="prerequisites"></a>
 
-## What is this?
+## Requirements
 
-GPT Device Troubleshooter explores AI-assisted workflows where prompts, context, and automation logic help with endpoint or operations tasks.
+- GPT enabled Subscription (https://aka.ms/oai/access)
+- App registration with deligated permissions (DeviceManagementConfiguration.Read.All, DeviceManagementManagedDevices.Read.All, DeviceManagementApps.Read.All, Group.Read.All, User.Read, Device.Read.All)
 
-## Project Context
+![Alt text](https://github.com/JayRHa/gpt-device-troubleshooter/blob/main/assets/appRegistartion.png)
 
-- Use it as a reference for combining automation with model-assisted analysis or responses.
-- The important design boundary is keeping deterministic automation separate from model-generated output.
-- This repository is archived and kept as a reference implementation.
+## Quickstart
 
-## How It Works
+Get the source locally:
 
-Input is collected from the user or system, enriched with context, sent through AI-assisted processing, then converted into a recommendation, response, or automation step.
-
-```mermaid
-flowchart LR
-    Input[User or system input] --> Context[Context collection]
-    Context --> Model[AI-assisted processing]
-    Model --> Review[Validation or review]
-    Review --> Output[Recommendation or action]
-    Output --> User[User workflow]
+```bash
+git clone https://github.com/JayRHa/gpt-device-troubleshooter.git
+cd gpt-device-troubleshooter
 ```
 
-## Quick Start
+This repository is archived; the documentation below describes its last published implementation.
 
-1. Review the project context and workflow below.
-2. Clone the repository:
+Entry points: [`requirements.txt`](requirements.txt).
 
-   ```bash
-   git clone https://github.com/JayRHa/GPTDeviceTroubleshooter.git
-   ```
+## Documentation
 
-3. Continue with the setup, usage, or workflow sections below.
+[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJayRHa%2Fgpt-device-troubleshooter%2Fmain%2Fazuredeploy.json)
 
+- Find more informations in my blog post on jannikreinhard.com
+
+## Contribution
+
+<table>
+  <tbody>
+    <tr>
+        <td align="center"><a href="https://github.com/JayRHa"><img src="https://avatars.githubusercontent.com/u/73911860?v=4" width="100px;" alt="Jannik Reinhard"/><br /><sub><b>Jannik Reinhard</b></sub></a><br /><a href="https://twitter.com/jannik_reinhard" title="Twitter">💬</a> <a href="https://www.linkedin.com/in/jannik-r/" title="LinkedIn">💬</a></td>
+  </tbody>
+</table>
+
+## How does it work
+
+- Full infra deployment via ARM
+- Code will be pulled from git hub
+- User delegated permissions to authenticate on graph
+- Azure App Service for the website and the code logic
+
+![Alt text](https://github.com/JayRHa/gpt-device-troubleshooter/blob/main/assets/auth.png)
+
+![Alt text](https://github.com/JayRHa/gpt-device-troubleshooter/blob/main/assets/flow.png)
+
+## Deployment
+
+[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJayRHa%2Fgpt-device-troubleshooter%2Fmain%2Fazuredeploy.json)
+
+## Post steps
+
+- Fill out in the App Service Settings the variables (APPLICATION_ID, AZURE_OPENAI_KEY)
+
+## How to contribute?
+
+If you have a ideas for improvements or for missing features as well as bugs, contact me via my blog, social media or open an issue on the repository with an description of your idea.
+
+## Disclosure
+
+This is a community repository. There is no guarantee for this. Please check thoroughly before running the scripts.
+
+<!-- jr-brand-footer:start -->
 ---
-<!-- unified-readme:end -->
 
-# GPT Device Troubleshooter
-
-Archived GPT-assisted device troubleshooting experiment for endpoint management scenarios.
+[Articles and guides](https://jannikreinhard.com/) · [Repository index](https://github.com/JayRHa/.github/blob/main/REPOSITORIES.md)
+<!-- jr-brand-footer:end -->
