@@ -66,6 +66,9 @@ def ask_for_device_name(device_name):
     
 
 def write_assistant_answer(text, logging=True):
+    if not isinstance(text, str) or not text.strip():
+        st.warning("No text response was returned. Please retry; this response was not added to chat history.")
+        return
     with st.chat_message("assistant"):
         st.markdown(text)
     if logging:
@@ -153,76 +156,80 @@ if prompt := st.chat_input("Welcome I am your GPT Intune Troubleshooting Assista
         with st.chat_message("assistant"):
             st.markdown("You are not logged in. Please login first.")
     else:
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
+        try:
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
 
-        if st.session_state["category"] is None or st.session_state["category"] == 'None' or st.session_state["category"] == '':
-            response = util.get_category(category_list, prompt)
-            st.session_state["category"] = response["category"]  
-            st.session_state["devicename"] = response["devicename"] #It non than blabla
-            st.session_state["username"] = response["username"]
-            st.session_state["question"] = response["question"]
-        else:
-            response = util.get_info_from_prompt(prompt, st.session_state["question"])
-            st.session_state["user_want_skip"] = response["user_want_skip"]
-            st.session_state["devicename"] = response["devicename"]
-            st.session_state["username"] = response["username"]
-
-        if st.session_state["user_want_skip"]:
-            reset = True
-        else:
             if st.session_state["category"] is None or st.session_state["category"] == 'None' or st.session_state["category"] == '':
-                write_assistant_answer("This question does not fit any of the predefined categories, but I'll try to answer the question.", logging=False)
-                answer = util.invoke_gpt_call(user=prompt, history=st.session_state.messages)
-                write_assistant_answer(answer)
-                st.session_state["category"] = None
-            elif st.session_state["category"] == 'GetDeviceList':
-                answer = util.get_device_list(question=prompt, history=st.session_state.messages)
-                write_assistant_answer(answer)
-                st.session_state["category"] = None
-            elif st.session_state["category"] == 'GetDeviceStatus':
-                if ask_for_device_name(st.session_state["devicename"]):
-                    answer = util.get_device_status(device_name=st.session_state["devicename"], question=prompt, history=st.session_state.messages)
-                    write_assistant_answer(answer)
-                    st.session_state["category"] = None
-            elif st.session_state["category"] == 'GetSingleDevice':
-                if ask_for_device_name(st.session_state["devicename"]):
-                    answer = util.get_device_info(device_name=st.session_state["devicename"], question=prompt, history=st.session_state.messages)
-                    write_assistant_answer(answer)
-                    st.session_state["category"] = None
-            elif st.session_state["category"] == 'ConfigProfiles':
-                answer = util.get_config_profiles(question=prompt, history=st.session_state.messages)
-                write_assistant_answer(answer)
-                st.session_state["category"] = None
-            elif st.session_state["category"] == 'AppList':
-                answer = util.get_apps(question=prompt, history=st.session_state.messages)
-                write_assistant_answer(answer)
-                st.session_state["category"] = None
-            elif st.session_state["category"] == 'CompliancePolicies':
-                answer = util.get_compliance_policies(question=prompt, history=st.session_state.messages)
-                write_assistant_answer(answer)
-                st.session_state["category"] = None
-            elif st.session_state["category"] == 'DeviceGroupMembership':
-                if ask_for_device_name(st.session_state["devicename"]):
-                    answer = util.get_device_group_membership(st.session_state["devicename"], question=prompt, history=None)
-                    write_assistant_answer(answer)
-                    st.session_state["category"] = None
-            elif st.session_state["category"] == 'IntuneHowTo':
-                pass
-                st.session_state["category"] = None
-            elif st.session_state["category"] == 'GraphCall':
-                graph_call = util.get_graph_url(question=prompt, history=st.session_state.messages)
-                print(graph_call)
-                if(graph_call['graph_call'] is not None):
-                    answer = util.run_graph_call(graph_call=graph_call['graph_call'], question=prompt, history=st.session_state.messages)
-                    answer
-                    write_assistant_answer(answer)
-                    st.session_state["category"] = None
-                else:
-                    write_assistant_answer("No graph url found. Please try again")
+                response = util.get_category(category_list, prompt)
+                st.session_state["category"] = response["category"]  
+                st.session_state["devicename"] = response["devicename"] #It non than blabla
+                st.session_state["username"] = response["username"]
+                st.session_state["question"] = response["question"]
             else:
-                write_assistant_answer("Something went wrong. The category was not found. Please try again")
+                response = util.get_info_from_prompt(prompt, st.session_state["question"])
+                st.session_state["user_want_skip"] = response["user_want_skip"]
+                st.session_state["devicename"] = response["devicename"]
+                st.session_state["username"] = response["username"]
+
+            if st.session_state["user_want_skip"]:
+                reset = True
+            else:
+                if st.session_state["category"] is None or st.session_state["category"] == 'None' or st.session_state["category"] == '':
+                    write_assistant_answer("This question does not fit any of the predefined categories, but I'll try to answer the question.", logging=False)
+                    answer = util.invoke_gpt_call(user=prompt, history=st.session_state.messages)
+                    write_assistant_answer(answer)
+                    st.session_state["category"] = None
+                elif st.session_state["category"] == 'GetDeviceList':
+                    answer = util.get_device_list(question=prompt, history=st.session_state.messages)
+                    write_assistant_answer(answer)
+                    st.session_state["category"] = None
+                elif st.session_state["category"] == 'GetDeviceStatus':
+                    if ask_for_device_name(st.session_state["devicename"]):
+                        answer = util.get_device_status(device_name=st.session_state["devicename"], question=prompt, history=st.session_state.messages)
+                        write_assistant_answer(answer)
+                        st.session_state["category"] = None
+                elif st.session_state["category"] == 'GetSingleDevice':
+                    if ask_for_device_name(st.session_state["devicename"]):
+                        answer = util.get_device_info(device_name=st.session_state["devicename"], question=prompt, history=st.session_state.messages)
+                        write_assistant_answer(answer)
+                        st.session_state["category"] = None
+                elif st.session_state["category"] == 'ConfigProfiles':
+                    answer = util.get_config_profiles(question=prompt, history=st.session_state.messages)
+                    write_assistant_answer(answer)
+                    st.session_state["category"] = None
+                elif st.session_state["category"] == 'AppList':
+                    answer = util.get_apps(question=prompt, history=st.session_state.messages)
+                    write_assistant_answer(answer)
+                    st.session_state["category"] = None
+                elif st.session_state["category"] == 'CompliancePolicies':
+                    answer = util.get_compliance_policies(question=prompt, history=st.session_state.messages)
+                    write_assistant_answer(answer)
+                    st.session_state["category"] = None
+                elif st.session_state["category"] == 'DeviceGroupMembership':
+                    if ask_for_device_name(st.session_state["devicename"]):
+                        answer = util.get_device_group_membership(st.session_state["devicename"], question=prompt, history=None)
+                        write_assistant_answer(answer)
+                        st.session_state["category"] = None
+                elif st.session_state["category"] == 'IntuneHowTo':
+                    pass
+                    st.session_state["category"] = None
+                elif st.session_state["category"] == 'GraphCall':
+                    graph_call = util.get_graph_url(question=prompt, history=st.session_state.messages)
+                    print(graph_call)
+                    if(graph_call['graph_call'] is not None):
+                        answer = util.run_graph_call(graph_call=graph_call['graph_call'], question=prompt, history=st.session_state.messages)
+                        answer
+                        write_assistant_answer(answer)
+                        st.session_state["category"] = None
+                    else:
+                        write_assistant_answer("No graph url found. Please try again")
+                else:
+                    write_assistant_answer("Something went wrong. The category was not found. Please try again")
+        except RuntimeError as error:
+            st.error(str(error))
+            reset = True
     if reset is True:
         st.session_state["category"] = None
         st.session_state["devicename"] = None

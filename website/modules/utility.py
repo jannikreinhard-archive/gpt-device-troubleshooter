@@ -31,12 +31,10 @@ class utility:
             })
 
         if history is not None:
-             messages = messages + history
+             messages = messages + [m for m in history if isinstance(m, dict) and m.get("role") in ("user", "assistant", "system") and isinstance(m.get("content"), str) and m["content"].strip()]
 
-        messages.append({
-            "role": "user",
-            "content": user
-        })
+        if not messages or messages[-1] != {"role": "user", "content": user}:
+            messages.append({"role": "user", "content": user})
 
         body = {
             "messages": messages,
@@ -44,13 +42,16 @@ class utility:
         }
 
         try:
-            response = requests.post(f"{self.azure_openai_endpoint}/openai/deployments/{self.azure_openai_deployment}/chat/completions?api-version=2023-05-15", headers=headers, data=json.dumps(body))
+            response = requests.post(f"{self.azure_openai_endpoint}/openai/deployments/{self.azure_openai_deployment}/chat/completions?api-version=2023-05-15", headers=headers, data=json.dumps(body), timeout=60)
             response.raise_for_status()
             response_data = response.json()
-            return response_data["choices"][0]["message"]["content"]
+            content = response_data["choices"][0]["message"]["content"]
+            if not isinstance(content, str) or not content.strip():
+                raise ValueError("Empty model response")
+            return content
         except Exception as e:
-            print(f"Error while executing a call to {self.azure_openai_endpoint}: {e}")
-            return None
+            # Avoid logging prompts, tenant data, credentials or HTTP response bodies.
+            raise RuntimeError("The model request failed or returned no text. Check the deployment, API access and request size; then retry.") from e
 
 
 #################################################################################################
@@ -59,18 +60,15 @@ class utility:
     def get_graph_call_custom(self, endpoint, value=True):
         uri = BASE_URL + endpoint
         try:
-            response = requests.get(uri, headers=self.graph_auth_header)
+            response = requests.get(uri, headers=self.graph_auth_header, timeout=60)
+            response.raise_for_status()
+            payload = response.json()
         except Exception as e:
-            print(f"Error while executing a call to {uri}: {e}")
-            raise(f"Error while executing a call to {uri}: {e}")
-        
-        response.raise_for_status()
-
+            raise RuntimeError("The Microsoft Graph request failed. Check the sign-in session, API permissions and Intune role access; then retry.") from e
         if value:
-            return response.json().get('value', {})
-        else:
-            return response.json()
-        
+            return payload.get('value', [])
+        return payload
+
     # ToDo: Add error handling
 
     def get_apps_graph(self):
