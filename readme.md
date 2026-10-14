@@ -96,9 +96,3 @@ This is a community repository. There is no guarantee for this. Please check tho
 
 [Articles and guides](https://jannikreinhard.com/) · [Repository index](https://github.com/JayRHa/.github/blob/main/REPOSITORIES.md)
 <!-- jr-brand-footer:end -->
-
-## Response-error regression fix
-
-The proposed error-handling update rejects empty model replies, filters invalid entries from chat history, uses bounded HTTP timeouts, and shows request failures without saving them as assistant messages. A failed call can then be retried without a null-content history entry. The UI resets its category state after request errors.
-
-Offline check: `python3 -m unittest discover -s tests -v`. Network calls are mocked. This does not validate the configured Azure OpenAI deployment, model context limits, Graph permissions, or current endpoint compatibility. The archived sample needs a separate environment review before reuse.
